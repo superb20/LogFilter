@@ -25,15 +25,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,7 +68,7 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     private static final long serialVersionUID = 1L;
 
     static final String LOGFILTER = "LogFilter";
-    static final String VERSION = "Version 1.8";
+    static final String VERSION = "Version 1.9";
     final String COMBO_ANDROID = "Android          ";
     final String COMBO_CUSTOM_COMMAND = "custom command";
 
@@ -89,8 +81,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     static final int MIN_WIDTH = 1100;
     static final int MIN_HEIGHT = 500;
 
-    static final int DEVICES_ANDROID = 0;
-    static final int DEVICES_IOS = 1;
     static final int DEVICES_CUSTOM = 2;
 
     static final int STATUS_CHANGE = 1;
@@ -128,6 +118,7 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     JComboBox m_comboDeviceCmd;
     JComboBox m_comboCmd;
     JButton m_btnSetFont;
+    JButton m_btnReboot;
 
     // Log filter enable/disable
     JCheckBox m_chkEnableFind;
@@ -452,6 +443,7 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     void addDesc() {
         addDesc(VERSION);
         addDesc("");
+        addDesc("Version 1.9 : Add reboot button");
         addDesc("Version 1.8 : java -jar LogFilter_xx.jar [filename] 추가");
         addDesc("Version 1.7 : copy시 보이는 column만 clipboard에 복사(Line 제외)");
         addDesc("Version 1.6 : cmd콤보박스 길이 고정");
@@ -558,11 +550,14 @@ public class LogFilterMain extends JFrame implements INotiEvent {
         m_btnDevice = new JButton("OK");
         m_btnDevice.setMargin(new Insets(0, 0, 0, 0));
         m_btnDevice.addActionListener(m_alButtonListener);
-
         jpCmd.add(m_comboDeviceCmd);
         jpCmd.add(m_btnDevice);
-
         jpOptionDevice.add(jpCmd, BorderLayout.NORTH);
+
+        m_btnReboot = new JButton("Reboot");
+        m_btnReboot.setMargin(new Insets(0, 0, 0, 0));
+        m_btnReboot.addActionListener(m_alButtonListener);
+        jpOptionDevice.add(m_btnReboot, BorderLayout.SOUTH);
 
         m_lDeviceList = new JList(listModel);
         JScrollPane vbar = new JScrollPane(m_lDeviceList);
@@ -1556,9 +1551,9 @@ public class LogFilterMain extends JFrame implements INotiEvent {
 
     ActionListener m_alButtonListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource().equals(m_btnDevice))
+            if (e.getSource().equals(m_btnDevice)) {
                 setDeviceList();
-            else if (e.getSource().equals(m_btnSetFont)) {
+            } else if (e.getSource().equals(m_btnSetFont)) {
                 m_tbLogTable.setFontSize(Integer.parseInt(m_tfFontSize.getText()));
                 updateTable(-1, false);
             } else if (e.getSource().equals(m_btnRun)) {
@@ -1571,13 +1566,20 @@ public class LogFilterMain extends JFrame implements INotiEvent {
                 clearData();
                 updateTable(-1, false);
                 m_bPauseADB = bBackup;
-            } else if (e.getSource().equals(m_tbtnPause))
+            } else if (e.getSource().equals(m_tbtnPause)) {
                 pauseProcess();
-            else if (e.getSource().equals(m_jcFontType)) {
+            } else if (e.getSource().equals(m_jcFontType)) {
                 T.d("font = " + m_tbLogTable.getFont());
 
                 m_tbLogTable.setFont(new Font((String) m_jcFontType.getSelectedItem(), Font.PLAIN, 12));
                 m_tbLogTable.setFontSize(Integer.parseInt(m_tfFontSize.getText()));
+            } else if (e.getSource().equals(m_btnReboot)) {
+                String strCommand = "adb reboot";
+                try {
+                    Process oProcess = Runtime.getRuntime().exec(strCommand);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     };
