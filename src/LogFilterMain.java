@@ -78,19 +78,10 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     static final String LOGFILTER = "LogFilter";
     static final String VERSION = "Version 1.8";
     final String COMBO_ANDROID = "Android          ";
-    final String COMBO_IOS = "ios";
     final String COMBO_CUSTOM_COMMAND = "custom command";
-    final String IOS_DEFAULT_CMD = "adb logcat -v time ";
-    final String IOS_SELECTED_CMD_FIRST = "adb -s ";
-    final String IOS_SELECTED_CMD_LAST = " logcat -v time ";
-    //    final String              ANDROID_DEFAULT_CMD        = "logcat -v time ";
-//    final String              ANDROID_THREAD_CMD         = "logcat -v threadtime ";
-//    final String              ANDROID_EVENT_CMD          = "logcat -b events -v time ";
-//    final String              ANDROID_RADIO_CMD          = "logcat -b radio -v time          ";
-//    final String              ANDROID_CUSTOM_CMD         = "logcat ";
+
     final String ANDROID_DEFAULT_CMD_FIRST = "adb ";
     final String ANDROID_SELECTED_CMD_FIRST = "adb -s ";
-    //    final String              ANDROID_SELECTED_CMD_LAST  = " logcat -v time ";
     final String[] DEVICES_CMD = {"adb devices", "", ""};
 
     static final int DEFAULT_WIDTH = 1200;
@@ -106,10 +97,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     static final int STATUS_PARSING = 2;
     static final int STATUS_READY = 4;
 
-    final int L = SwingConstants.LEFT;
-    final int C = SwingConstants.CENTER;
-    final int R = SwingConstants.RIGHT;
-
     JTabbedPane m_tpTab;
     JTextField m_tfStatus;
     IndicatorPanel m_ipIndicator;
@@ -122,14 +109,11 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     HashMap<Integer, Integer> m_hmErrorFiltered;
     ILogParser m_iLogParser;
     LogTable m_tbLogTable;
-    //    TagTable                    m_tbTagTable;
     JScrollPane m_scrollVBar;
-    //    JScrollPane                 m_scrollVTagBar;
     LogFilterTableModel m_tmLogTableModel;
-    //    TagFilterTableModel         m_tmTagTableModel;
     boolean m_bUserFilter;
 
-    //Word Filter, tag filter
+    // Word Filter, tag filter
     JTextField m_tfHighlight;
     JTextField m_tfFindWord;
     JTextField m_tfRemoveWord;
@@ -138,14 +122,14 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     JTextField m_tfShowPid;
     JTextField m_tfShowTid;
 
-    //Device
+    // Device
     JButton m_btnDevice;
     JList m_lDeviceList;
     JComboBox m_comboDeviceCmd;
     JComboBox m_comboCmd;
     JButton m_btnSetFont;
 
-    //Log filter enable/disable
+    // Log filter enable/disable
     JCheckBox m_chkEnableFind;
     JCheckBox m_chkEnableRemove;
     JCheckBox m_chkEnableShowTag;
@@ -154,7 +138,7 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     JCheckBox m_chkEnableShowTid;
     JCheckBox m_chkEnableHighlight;
 
-    //Log filter
+    // Log filter
     JCheckBox m_chkVerbose;
     JCheckBox m_chkDebug;
     JCheckBox m_chkInfo;
@@ -162,7 +146,7 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     JCheckBox m_chkError;
     JCheckBox m_chkFatal;
 
-    //Show column
+    // Show column
     JCheckBox m_chkClmBookmark;
     JCheckBox m_chkClmLine;
     JCheckBox m_chkClmDate;
@@ -174,7 +158,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     JCheckBox m_chkClmMessage;
 
     JTextField m_tfFontSize;
-    //    JTextField                  m_tfProcessCmd;
     JComboBox m_comboEncode;
     JComboBox m_jcFontType;
     JButton m_btnRun;
@@ -184,7 +167,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
 
     String m_strLogFileName;
     String m_strSelectedDevice;
-    //    String                      m_strProcessCmd;
     Process m_Process;
     Thread m_thProcess;
     Thread m_thWatchFile;
@@ -201,14 +183,10 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     int m_nLastHeight;
     int m_nWindState;
     static RecentFileMenu m_recentMenu;
-//    String                    m_strLastDir;
 
     public static void main(final String[] args) {
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         final LogFilterMain mainFrame = new LogFilterMain();
         mainFrame.setTitle(LOGFILTER + " " + VERSION);
-//        mainFrame.addWindowListener(new WindowEventHandler());
 
         JMenuBar menubar = new JMenuBar();
         JMenu file = new JMenu("File");
@@ -295,8 +273,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
         loadCmd();
         m_tbLogTable.setColumnWidth();
 
-//        if(m_nWindState == JFrame.MAXIMIZED_BOTH)
-//        else
         setSize(m_nWinWidth, m_nWinHeight);
         setExtendedState(m_nWindState);
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
@@ -305,7 +281,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     final String INI_FILE = "LogFilter.ini";
     final String INI_FILE_CMD = "LogFilterCmd.ini";
     final String INI_FILE_COLOR = "LogFilterColor.ini";
-    final String INI_LAST_DIR = "LAST_DIR";
     final String INI_CMD_COUNT = "CMD_COUNT";
     final String INI_CMD = "CMD_";
     final String INI_FONT_TYPE = "FONT_TYPE";
@@ -446,7 +421,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
             T.d("m_nWindState = " + m_nWindState);
 
             Properties p = new Properties();
-//            p.setProperty( INI_LAST_DIR, m_strLastDir );
             p.setProperty(INI_FONT_TYPE, (String) m_jcFontType.getSelectedItem());
             p.setProperty(INI_WORD_FIND, m_tfFindWord.getText());
             p.setProperty(INI_WORD_REMOVE, m_tfRemoveWord.getText());
@@ -555,17 +529,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     Component getBookmarkPanel() {
         JPanel jp = new JPanel();
         jp.setLayout(new BorderLayout());
-
-//        //iookill
-//        m_tmTagTableModel = new TagFilterTableModel();
-//        m_tmTagTableModel.setData(m_arTagInfo);
-//        m_tbTagTable = new TagTable(m_tmTagTableModel, this);
-//
-//        m_scrollVTagBar = new JScrollPane(m_tbTagTable);
-//        m_scrollVTagBar.setPreferredSize(new Dimension(182,50));
-//        // show list
-//        jp.add(m_scrollVTagBar, BorderLayout.WEST);
-
         m_ipIndicator = new IndicatorPanel(this);
         m_ipIndicator.setData(m_arLogInfoAll, m_hmBookmarkAll, m_hmErrorAll);
         jp.add(m_ipIndicator, BorderLayout.CENTER);
@@ -576,13 +539,10 @@ public class LogFilterMain extends JFrame implements INotiEvent {
         JPanel jpOptionDevice = new JPanel();
         jpOptionDevice.setBorder(BorderFactory.createTitledBorder("Device select"));
         jpOptionDevice.setLayout(new BorderLayout());
-//        jpOptionDevice.setPreferredSize(new Dimension(200, 100));
 
         JPanel jpCmd = new JPanel();
         m_comboDeviceCmd = new JComboBox();
         m_comboDeviceCmd.addItem(COMBO_ANDROID);
-//        m_comboDeviceCmd.addItem(COMBO_IOS);
-//        m_comboDeviceCmd.addItem(CUSTOM_COMMAND);
         m_comboDeviceCmd.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() != ItemEvent.SELECTED) return;
@@ -625,33 +585,11 @@ public class LogFilterMain extends JFrame implements INotiEvent {
         return jpOptionDevice;
     }
 
-    void addTagList(String strTag) {
-//        for(TagInfo tagInfo : m_arTagInfo)
-//            if(tagInfo.m_strTag.equals(strTag))
-//                return;
-//        String strRemoveFilter = m_tbLogTable.GetFilterRemoveTag();
-//        String strShowFilter = m_tbLogTable.GetFilterShowTag();
-//        TagInfo tagInfo = new TagInfo();
-//        tagInfo.m_strTag = strTag;
-//        if(strRemoveFilter.contains(strTag))
-//            tagInfo.m_bRemove = true;
-//        if(strShowFilter.contains(strTag))
-//            tagInfo.m_bShow = true;
-//        m_arTagInfo.add(tagInfo);
-//        m_tmTagTableModel.setData(m_arTagInfo);
-//
-//        m_tmTagTableModel.fireTableRowsUpdated(0, m_tmTagTableModel.getRowCount() - 1);
-//        m_scrollVTagBar.validate();
-//        m_tbTagTable.invalidate();
-//        m_tbTagTable.repaint();
-//            m_tbTagTable.changeSelection(0, 0, false, false);
-    }
-
     void addLogInfo(LogInfo logInfo) {
         synchronized (FILTER_LOCK) {
             m_tbLogTable.setTagLength(logInfo.m_strTag.length());
             m_arLogInfoAll.add(logInfo);
-//            addTagList(logInfo.m_strTag);
+
             if (logInfo.m_strLogLV.equals("E") || logInfo.m_strLogLV.equals("ERROR"))
                 m_hmErrorAll.put(Integer.parseInt(logInfo.m_strLine) - 1, Integer.parseInt(logInfo.m_strLine) - 1);
 
@@ -726,7 +664,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
 
         m_scrollVBar.getViewport().addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-//                m_ipIndicator.m_bDrawFull = false;
                 if (getExtendedState() != JFrame.MAXIMIZED_BOTH) {
                     m_nLastWidth = getWidth();
                     m_nLastHeight = getHeight();
@@ -938,11 +875,12 @@ public class LogFilterMain extends JFrame implements INotiEvent {
         m_jcFontType = new JComboBox();
         String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         m_jcFontType.addItem("Dialog");
+
         for (int i = 0; i < fonts.length; i++) {
             m_jcFontType.addItem(fonts[i]);
         }
-        m_jcFontType.addActionListener(m_alButtonListener);
 
+        m_jcFontType.addActionListener(m_alButtonListener);
 
         JLabel jlFont = new JLabel("Font Size : ");
         m_tfFontSize = new JTextField(2);
@@ -974,27 +912,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
         JLabel jlProcessCmd = new JLabel("Cmd : ");
         m_comboCmd = new JComboBox();
         m_comboCmd.setPreferredSize(new Dimension(180, 25));
-//        m_comboCmd.setMaximumSize( m_comboCmd.getPreferredSize()  );
-//        m_comboCmd.setSize( 20000, m_comboCmd.getHeight() );
-//        m_comboCmd.addItem(ANDROID_THREAD_CMD);
-//        m_comboCmd.addItem(ANDROID_DEFAULT_CMD);
-//        m_comboCmd.addItem(ANDROID_RADIO_CMD);
-//        m_comboCmd.addItem(ANDROID_EVENT_CMD);
-//        m_comboCmd.addItem(ANDROID_CUSTOM_CMD);
-//        m_comboCmd.addItemListener(new ItemListener()
-//        {
-//            public void itemStateChanged(ItemEvent e)
-//            {
-//                if(e.getStateChange() != ItemEvent.SELECTED) return;
-//
-//                if (e.getItem().equals(ANDROID_CUSTOM_CMD)) {
-//                    m_comboCmd.setEditable(true);
-//                } else {
-//                    m_comboCmd.setEditable(false);
-//                }
-////                setProcessCmd(m_comboDeviceCmd.getSelectedIndex(), m_strSelectedDevice);
-//            }
-//        });
 
         m_btnClear = new JButton("Clear");
         m_btnClear.setMargin(new Insets(0, 0, 0, 0));
@@ -1079,7 +996,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
         m_hmErrorFiltered = new HashMap<Integer, Integer>();
 
         m_strLogFileName = makeFilename();
-//        m_strProcessCmd     = ANDROID_DEFAULT_CMD + m_strLogFileName;
     }
 
     void parseFile(final File file) {
@@ -1270,40 +1186,12 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     String getProcessCmd() {
         if (m_lDeviceList.getSelectedIndex() < 0)
             return ANDROID_DEFAULT_CMD_FIRST + m_comboCmd.getSelectedItem();
-//            return ANDROID_DEFAULT_CMD_FIRST + m_comboCmd.getSelectedItem() + makeFilename();
         else
             return ANDROID_SELECTED_CMD_FIRST + m_strSelectedDevice + m_comboCmd.getSelectedItem();
     }
 
     void setProcessCmd(int nType, String strSelectedDevice) {
-//        m_comboCmd.removeAllItems();
-
         m_strLogFileName = makeFilename();
-//        if(strSelectedDevice != null)
-//        {
-//            strSelectedDevice = strSelectedDevice.replace("\t", " ").replace("device", "").replace("offline", "");
-//            T.d("strSelectedDevice = " + strSelectedDevice);
-//        }
-
-        if (nType == DEVICES_ANDROID) {
-            if (strSelectedDevice != null && strSelectedDevice.length() > 0) {
-//                m_comboCmd.addItem(ANDROID_SELECTED_CMD_FIRST + strSelectedDevice + ANDROID_SELECTED_CMD_LAST);
-//                m_strProcessCmd = ANDROID_SELECTED_CMD_FIRST + strSelectedDevice + ANDROID_SELECTED_CMD_LAST;
-            } else {
-//                m_comboCmd.addItem(ANDROID_DEFAULT_CMD);
-//                m_strProcessCmd = ANDROID_DEFAULT_CMD;
-            }
-        } else if (nType == DEVICES_IOS) {
-            if (strSelectedDevice != null && strSelectedDevice.length() > 0) {
-//                m_comboCmd.addItem(ANDROID_SELECTED_CMD_FIRST + strSelectedDevice + ANDROID_SELECTED_CMD_LAST);
-//                m_strProcessCmd = IOS_SELECTED_CMD_FIRST + strSelectedDevice + IOS_SELECTED_CMD_LAST;
-            } else {
-//              m_comboCmd.addItem(IOS_DEFAULT_CMD);
-//              m_strProcessCmd = IOS_DEFAULT_CMD;
-            }
-        } else {
-//            m_comboCmd.addItem(ANDROID_DEFAULT_CMD);
-        }
     }
 
     void setStatus(String strText) {
@@ -1410,8 +1298,8 @@ public class LogFilterMain extends JFrame implements INotiEvent {
                 } catch (Exception e) {
                     T.e(e);
                 }
+
                 System.out.println("End m_thWatchFile thread");
-//                setTitle(LOGFILTER + " " + VERSION);
             }
         });
         m_thWatchFile.start();
@@ -1466,7 +1354,6 @@ public class LogFilterMain extends JFrame implements INotiEvent {
                                 if (nIndex % 10000 == 0)
                                     Thread.sleep(1);
                                 if (m_nChangedFilter == STATUS_CHANGE) {
-//                                    T.d("m_nChangedFilter == STATUS_CHANGE");
                                     break;
                                 }
                                 logInfo = m_arLogInfoAll.get(nIndex);
@@ -1544,13 +1431,12 @@ public class LogFilterMain extends JFrame implements INotiEvent {
                             synchronized (FILE_LOCK) {
                                 fileOut.write(s);
                                 fileOut.write("\r\n");
-//                                fileOut.newLine();
                                 fileOut.flush();
                             }
                         }
                     }
+
                     fileOut.close();
-//                    T.d("Exit Code: " + m_Process.exitValue());
                 } catch (Exception e) {
                     T.e("e = " + e);
                 }
@@ -1715,10 +1601,9 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     void updateTable(int nRow, boolean bMove) {
         m_tmLogTableModel.fireTableRowsUpdated(0, m_tmLogTableModel.getRowCount() - 1);
         m_scrollVBar.validate();
-//        if(nRow >= 0)
-//            m_tbLogTable.changeSelection(nRow, 0, false, false);
         m_tbLogTable.invalidate();
         m_tbLogTable.repaint();
+
         if (nRow >= 0)
             m_tbLogTable.changeSelection(nRow, 0, false, false, bMove);
     }
@@ -1841,24 +1726,11 @@ public class LogFilterMain extends JFrame implements INotiEvent {
 
     public void openFileBrowser() {
         FileDialog fd = new FileDialog(this, "File open", FileDialog.LOAD);
-//        fd.setDirectory( m_strLastDir );
         fd.setVisible(true);
+
         if (fd.getFile() != null) {
             parseFile(new File(fd.getDirectory() + fd.getFile()));
             m_recentMenu.addEntry(fd.getDirectory() + fd.getFile());
         }
-
-        //In response to a button click:
-//        final JFileChooser fc = new JFileChooser(m_strLastDir);
-//        int returnVal = fc.showOpenDialog(this);
-//        if (returnVal == JFileChooser.APPROVE_OPTION)
-//        {
-//            File file = fc.getSelectedFile();
-//            m_strLastDir = fc.getCurrentDirectory().getAbsolutePath();
-//            T.d("file = " + file.getAbsolutePath());
-//            parseFile(file);
-//            m_recentMenu.addEntry( file.getAbsolutePath() );
-//        }
     }
 }
-
