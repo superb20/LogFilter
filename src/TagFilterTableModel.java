@@ -6,8 +6,8 @@ public class TagFilterTableModel extends AbstractTableModel
 {
     private static final long serialVersionUID = 1L;
 
-    public static String  ColName[] = { "Tag", "Show", "Remove" };
-    public static int     ColWidth[]= { 120,     30,     30};
+    public static String[] ColName = { "Tag", "Show", "Remove" };
+    public static int[] ColWidth = { 120,     30,     30};
 
     ArrayList<TagInfo> m_arData;
 

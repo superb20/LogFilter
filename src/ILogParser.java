@@ -10,10 +10,10 @@ import java.awt.Color;
  */
 public interface ILogParser
 {
-    public static final int TYPE_ANDROID_DDMS   = 0;
-    public static final int TYPE_ANDROID_LOGCAT = 1;
+    int TYPE_ANDROID_DDMS   = 0;
+    int TYPE_ANDROID_LOGCAT = 1;
     
-    public LogInfo parseLog(String strText);
-    public Color   getColor(LogInfo logInfo);
-    public int     getLogLV(LogInfo logInfo);
+    LogInfo parseLog(String strText);
+    Color   getColor(LogInfo logInfo);
+    int     getLogLV(LogInfo logInfo);
 }

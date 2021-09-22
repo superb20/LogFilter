@@ -253,9 +253,9 @@ class CheckCharacter implements ICheckValue
 
 interface ICheckValue
 {
-    public Object getMaxValue();
-    public Object getMiddleValue();
-    public Object getMinValue();
-    public Object getNull();
-    public Object getRandom();
+    Object getMaxValue();
+    Object getMiddleValue();
+    Object getMinValue();
+    Object getNull();
+    Object getRandom();
 }

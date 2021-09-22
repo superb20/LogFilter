@@ -34,8 +34,8 @@ import javax.swing.JMenuItem;
  */
 public abstract class RecentFileMenu extends JMenu{
 	private String pathToSavedFile; //where to save the items in this menu
-	private int itemCount; //how many items in the menu
-	private String[] recentEntries; //the recent file entries
+	private final int itemCount; //how many items in the menu
+	private final String[] recentEntries; //the recent file entries
 	private final static String defaultText="__R_e_C_e_N_t__:_?"; //colon & question mark are not allowed as a file name in any OS that I'm aware of
 	
 	/**
@@ -56,7 +56,7 @@ public abstract class RecentFileMenu extends JMenu{
 		//figure out the name of the recent file
 		this.pathToSavedFile=System.getProperty("user.dir");
 		if((this.pathToSavedFile==null)||(this.pathToSavedFile.length()<=0)){
-			this.pathToSavedFile=new String(name+".ini"); //probably unreachable
+			this.pathToSavedFile= name + ".ini"; //probably unreachable
 		} else if(this.pathToSavedFile.endsWith(File.separator)){
 			this.pathToSavedFile=this.pathToSavedFile+name+".ini";
 		} else{
@@ -103,12 +103,12 @@ public abstract class RecentFileMenu extends JMenu{
 		for(int index=count;index>0;index--){
 			//check for duplicate entry
 			if(!this.recentEntries[index-1].equalsIgnoreCase(filePath)){
-				this.recentEntries[index]=new String(this.recentEntries[index-1]);
+				this.recentEntries[index]= this.recentEntries[index - 1];
 			}
 		}
 		//add the new item, check if it's not alredy the first item
 		if(!this.recentEntries[0].equalsIgnoreCase(filePath)){
-			this.recentEntries[0]=new String(filePath);
+			this.recentEntries[0]= filePath;
 		}
 		//add items back to the menu
 		for(int index=0;index<this.itemCount;index++){

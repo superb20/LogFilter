@@ -66,16 +66,13 @@ public class LogCatParser implements ILogParser
     {
         if(strText.length() < 22) return false;
 
-        String strLevel = (String)strText.substring(19, 21);
-        if(strLevel.equals("D/")
+        String strLevel = strText.substring(19, 21);
+        return strLevel.equals("D/")
                 || strLevel.equals("V/")
                 || strLevel.equals("I/")
                 || strLevel.equals("W/")
                 || strLevel.equals("E/")
-                || strLevel.equals("F/")
-                )
-            return true;
-        return false;
+                || strLevel.equals("F/");
     }
 
 //04-20 12:06:02.125   146   179 D BatteryService: update start    
@@ -83,16 +80,13 @@ public class LogCatParser implements ILogParser
     {
         if(strText.length() < 34) return false;
 
-        String strLevel = (String)strText.substring(31, 33);
-        if(strLevel.equals("D ")
+        String strLevel = strText.substring(31, 33);
+        return strLevel.equals("D ")
                 || strLevel.equals("V ")
                 || strLevel.equals("I ")
                 || strLevel.equals("W ")
                 || strLevel.equals("E ")
-                || strLevel.equals("F ")
-                )
-            return true;
-        return false;
+                || strLevel.equals("F ");
     }
     
 //    <4>[19553.494855] [DEBUG] USB_SEL(1) HIGH set USB mode 
@@ -100,18 +94,15 @@ public class LogCatParser implements ILogParser
     {
         if(strText.length() < 18) return false;
 
-        String strLevel = (String)strText.substring(1, 2);
-        if(strLevel.equals("0")
+        String strLevel = strText.substring(1, 2);
+        return strLevel.equals("0")
                 || strLevel.equals("1")
                 || strLevel.equals("2")
                 || strLevel.equals("3")
                 || strLevel.equals("4")
                 || strLevel.equals("5")
                 || strLevel.equals("6")
-                || strLevel.equals("7")
-                )
-            return true;
-        return false;
+                || strLevel.equals("7");
     }
     
     public LogInfo getNormal(String strText)

@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -203,7 +204,7 @@ public class LogFilterMain extends JFrame implements INotiEvent
     static RecentFileMenu     m_recentMenu;
 //    String                    m_strLastDir;
 
-    public static void main(final String args[])
+    public static void main(final String[] args)
     {
 //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -638,11 +639,7 @@ public class LogFilterMain extends JFrame implements INotiEvent
 
                 DefaultListModel listModel = (DefaultListModel)m_lDeviceList.getModel();
                 listModel.clear();
-                if (e.getItem().equals(COMBO_CUSTOM_COMMAND)) {
-                    m_comboDeviceCmd.setEditable(true);
-                } else {
-                    m_comboDeviceCmd.setEditable(false);
-                }
+                m_comboDeviceCmd.setEditable(e.getItem().equals(COMBO_CUSTOM_COMMAND));
                 setProcessCmd(m_comboDeviceCmd.getSelectedIndex(), m_strSelectedDevice);
             }
         });
@@ -666,7 +663,7 @@ public class LogFilterMain extends JFrame implements INotiEvent
             public void valueChanged(ListSelectionEvent e)
             {
                 JList deviceList = (JList)e.getSource();
-                Object selectedItem = (Object)deviceList.getSelectedValue();
+                Object selectedItem = deviceList.getSelectedValue();
                 m_strSelectedDevice = "";
                 if(selectedItem != null)
                 {
@@ -1010,7 +1007,7 @@ public class LogFilterMain extends JFrame implements INotiEvent
 
         JLabel jlFontType = new JLabel("Font Type : ");
         m_jcFontType = new JComboBox();
-        String fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         m_jcFontType.addItem("Dialog");
         for ( int i = 0; i < fonts.length; i++ )
         {
@@ -1187,7 +1184,7 @@ public class LogFilterMain extends JFrame implements INotiEvent
                     fstream = new FileInputStream(file);
                     in = new DataInputStream(fstream);
                     if(m_comboEncode.getSelectedItem().equals("UTF-8"))
-                        br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                        br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
                     else
                         br = new BufferedReader(new InputStreamReader(in));
 
@@ -1466,7 +1463,7 @@ public class LogFilterMain extends JFrame implements INotiEvent
                     fstream = new FileInputStream(m_strLogFileName);
                     in = new DataInputStream(fstream);
                     if(m_comboEncode.getSelectedItem().equals("UTF-8"))
-                        br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                        br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
                     else
                         br = new BufferedReader(new InputStreamReader(in));
 
@@ -1697,10 +1694,10 @@ public class LogFilterMain extends JFrame implements INotiEvent
 
                     T.d("getProcessCmd() = " + getProcessCmd());
                     m_Process = Runtime.getRuntime().exec(getProcessCmd());
-                    BufferedReader stdOut   = new BufferedReader(new InputStreamReader(m_Process.getInputStream(), "UTF-8"));
+                    BufferedReader stdOut   = new BufferedReader(new InputStreamReader(m_Process.getInputStream(), StandardCharsets.UTF_8));
 
 //                    BufferedWriter fileOut = new BufferedWriter(new FileWriter(m_strLogFileName));
-                    Writer fileOut = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(m_strLogFileName), "UTF-8"));
+                    Writer fileOut = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(m_strLogFileName), StandardCharsets.UTF_8));
 
                     startFileParse();
 
@@ -1745,10 +1742,7 @@ public class LogFilterMain extends JFrame implements INotiEvent
             return true;
         if((m_nFilterLogLV & LogInfo.LOG_LV_ERROR) != 0 && (logInfo.m_strLogLV.equals("E") || logInfo.m_strLogLV.equals("ERROR")))
             return true;
-        if((m_nFilterLogLV & LogInfo.LOG_LV_FATAL) != 0 && (logInfo.m_strLogLV.equals("F") || logInfo.m_strLogLV.equals("FATAL")))
-            return true;
-
-        return false;
+        return (m_nFilterLogLV & LogInfo.LOG_LV_FATAL) != 0 && (logInfo.m_strLogLV.equals("F") || logInfo.m_strLogLV.equals("FATAL"));
     }
 
     boolean checkPidFilter(LogInfo logInfo)
@@ -1843,19 +1837,15 @@ public class LogFilterMain extends JFrame implements INotiEvent
 
     boolean checkUseFilter()
     {
-        if(!m_ipIndicator.m_chBookmark.isSelected()
-            && !m_ipIndicator.m_chError.isSelected()
-            && checkLogLVFilter(new LogInfo())
-            && (m_tbLogTable.GetFilterShowPid().length() == 0   || !m_chkEnableShowPid.isSelected())
-            && (m_tbLogTable.GetFilterShowTid().length() == 0   || !m_chkEnableShowTid.isSelected())
-            && (m_tbLogTable.GetFilterShowTag().length() == 0   || !m_chkEnableShowTag.isSelected())
-            && (m_tbLogTable.GetFilterRemoveTag().length() == 0 || !m_chkEnableRemoveTag.isSelected())
-            && (m_tbLogTable.GetFilterFind().length() == 0      || !m_chkEnableFind.isSelected())
-            && (m_tbLogTable.GetFilterRemove().length() == 0    || !m_chkEnableRemove.isSelected()))
-        {
-            m_bUserFilter = false;
-        }
-        else m_bUserFilter = true;
+        m_bUserFilter = m_ipIndicator.m_chBookmark.isSelected()
+                || m_ipIndicator.m_chError.isSelected()
+                || !checkLogLVFilter(new LogInfo())
+                || (m_tbLogTable.GetFilterShowPid().length() != 0 && m_chkEnableShowPid.isSelected())
+                || (m_tbLogTable.GetFilterShowTid().length() != 0 && m_chkEnableShowTid.isSelected())
+                || (m_tbLogTable.GetFilterShowTag().length() != 0 && m_chkEnableShowTag.isSelected())
+                || (m_tbLogTable.GetFilterRemoveTag().length() != 0 && m_chkEnableRemoveTag.isSelected())
+                || (m_tbLogTable.GetFilterFind().length() != 0 && m_chkEnableFind.isSelected())
+                || (m_tbLogTable.GetFilterRemove().length() != 0 && m_chkEnableRemove.isSelected());
         return m_bUserFilter;
     }
 

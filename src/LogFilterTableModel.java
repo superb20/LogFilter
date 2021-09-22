@@ -18,9 +18,9 @@ public class LogFilterTableModel extends AbstractTableModel
 
     private static final long serialVersionUID = 1L;
 
-    public static String  ColName[]     = { "Line", "Date", "Time", "LogLV", "Pid", "Thread", "Tag", "Bookmark", "Message" };
-    public static int     ColWidth[]    = { 50,     50,     100,    20,      50,    50,       100,   100,        600};
-    public static int     DEFULT_WIDTH[]= { 50,     50,     100,    20,      50,    50,       100,   100,        600};
+    public static String[] ColName = { "Line", "Date", "Time", "LogLV", "Pid", "Thread", "Tag", "Bookmark", "Message" };
+    public static int[] ColWidth = { 50,     50,     100,    20,      50,    50,       100,   100,        600};
+    public static int[] DEFULT_WIDTH = { 50,     50,     100,    20,      50,    50,       100,   100,        600};
     
     ArrayList<LogInfo> m_arData;
 
