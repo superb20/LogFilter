@@ -540,11 +540,7 @@ public class LogFilterMain extends JFrame implements INotiEvent {
 
                 DefaultListModel listModel = (DefaultListModel) m_lDeviceList.getModel();
                 listModel.clear();
-                if (e.getItem().equals(COMBO_CUSTOM_COMMAND)) {
-                    m_comboDeviceCmd.setEditable(true);
-                } else {
-                    m_comboDeviceCmd.setEditable(false);
-                }
+                m_comboDeviceCmd.setEditable(e.getItem().equals(COMBO_CUSTOM_COMMAND));
                 setProcessCmd();
             }
         });
@@ -1449,10 +1445,8 @@ public class LogFilterMain extends JFrame implements INotiEvent {
             return true;
         if ((m_nFilterLogLV & LogInfo.LOG_LV_ERROR) != 0 && (logInfo.m_strLogLV.equals("E") || logInfo.m_strLogLV.equals("ERROR")))
             return true;
-        if ((m_nFilterLogLV & LogInfo.LOG_LV_FATAL) != 0 && (logInfo.m_strLogLV.equals("F") || logInfo.m_strLogLV.equals("FATAL")))
-            return true;
 
-        return false;
+        return (m_nFilterLogLV & LogInfo.LOG_LV_FATAL) != 0 && (logInfo.m_strLogLV.equals("F") || logInfo.m_strLogLV.equals("FATAL"));
     }
 
     boolean checkPidFilter(LogInfo logInfo) {
@@ -1534,17 +1528,15 @@ public class LogFilterMain extends JFrame implements INotiEvent {
     }
 
     void checkUseFilter() {
-        if (!m_ipIndicator.m_chBookmark.isSelected()
-                && !m_ipIndicator.m_chError.isSelected()
-                && checkLogLVFilter(new LogInfo())
-                && (m_tbLogTable.GetFilterShowPid().length() == 0 || !m_chkEnableShowPid.isSelected())
-                && (m_tbLogTable.GetFilterShowTid().length() == 0 || !m_chkEnableShowTid.isSelected())
-                && (m_tbLogTable.GetFilterShowTag().length() == 0 || !m_chkEnableShowTag.isSelected())
-                && (m_tbLogTable.GetFilterRemoveTag().length() == 0 || !m_chkEnableRemoveTag.isSelected())
-                && (m_tbLogTable.GetFilterFind().length() == 0 || !m_chkEnableFind.isSelected())
-                && (m_tbLogTable.GetFilterRemove().length() == 0 || !m_chkEnableRemove.isSelected())) {
-            m_bUserFilter = false;
-        } else m_bUserFilter = true;
+        m_bUserFilter = m_ipIndicator.m_chBookmark.isSelected()
+                || m_ipIndicator.m_chError.isSelected()
+                || !checkLogLVFilter(new LogInfo())
+                || (m_tbLogTable.GetFilterShowPid().length() != 0 && m_chkEnableShowPid.isSelected())
+                || (m_tbLogTable.GetFilterShowTid().length() != 0 && m_chkEnableShowTid.isSelected())
+                || (m_tbLogTable.GetFilterShowTag().length() != 0 && m_chkEnableShowTag.isSelected())
+                || (m_tbLogTable.GetFilterRemoveTag().length() != 0 && m_chkEnableRemoveTag.isSelected())
+                || (m_tbLogTable.GetFilterFind().length() != 0 && m_chkEnableFind.isSelected())
+                || (m_tbLogTable.GetFilterRemove().length() != 0 && m_chkEnableRemove.isSelected());
     }
 
     ActionListener m_alButtonListener = new ActionListener() {
